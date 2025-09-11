@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>生理運動消耗與 MASLD(+) 線上計算機 </title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    .row { margin-bottom: 14px; }
+    label { display: inline-block; width: 120px; }
+    select, input { width: 80px; }
+    #result { font-size: 1.2em; margin-top: 24px; font-weight: bold; color: #005580; }
+    .note { font-size: 0.85em; color: #888; }
+  </style>
+</head>
+<body>
+  <h2>Nomogram MASLD(+) 預測線上計算機 By勛傑</h2>
+  <form id="nomogramForm">
+    <div class="row">
+      <label for="PAEE_custom">PAEE_custom</label>
+      <select id="PAEE_custom">
+        <option value="0">0</option>
+        <option value="1">1</option>
+      </select>
+    </div>
+    <div class="row">
+      <label for="workstreng">workstreng</label>
+      <select id="workstreng">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+      </select>
+    </div>
+    <div class="row">
+      <label for="g_bmi">g_bmi</label>
+      <select id="g_bmi">
+        <option value="10">10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+        <option value="25">25</option>
+        <option value="30">30</option>
+        <option value="35">35</option>
+        <option value="40">40</option>
+        <option value="45">45</option>
+        <option value="50">50</option>
+      </select>
+    </div>
+    <div class="row">
+      <label for="Smoking">Smoking</label>
+      <select id="Smoking">
+        <option value="0">0</option>
+        <option value="1">1</option>
+      </select>
+    </div>
+    <div class="row">
+      <label for="Alcohol">Alcohol</label>
+      <select id="Alcohol">
+        <option value="0">0</option>
+        <option value="1">1</option>
+      </select>
+    </div>
+    <div class="row">
+      <label for="DM">DM</label>
+      <select id="DM">
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+      </select>
+    </div>
+    <div class="row">
+      <label for="HLP">HLP</label>
+      <select id="HLP">
+        <option value="0">0</option>
+        <option value="1">1</option>
+      </select>
+    </div>
+    <div class="row">
+      <label for="HTN">HTN</label>
+      <select id="HTN">
+        <option value="0">0</option>
+        <option value="1">1</option>
+      </select>
+    </div>
+    <div class="row">
+      <label for="CKD">CKD</label>
+      <select id="CKD">
+        <option value="0">0</option>
+        <option value="1">1</option>
+      </select>
+    </div>
+    <button type="button" onclick="calculate()">計算</button>
+  </form>
+  <div id="result"></div>
+  <div class="note">
+    <p>依據 <b>Nomogram</b> 預測，分數愈高，MASLD(+) 機率愈高。<br>
+    
+  </div>
+  <script>
+    // 請依據你的 nomogram Points 對照表補齊下方分數
+    const scoreTable = {
+      PAEE_custom: { "0": 0, "1": 0.156 }, // <-- 填入你的分數
+      workstreng: { "1": 7.38, "2": 4.92, "3": 2.46, "4": 0 },
+      g_bmi: { "10": 0, "15": 12.5, "20": 25, "25": 37.5, "30": 50, "35": 62.5, "40": 75, "45": 87.5, "50": 100 },
+      Smoking: { "0": 0, "1": 0.0948 },
+      Alcohol: { "0": 2.27, "1": 0 },
+      DM: { "0": 0, "1": 5.64, "2": 11.27 },
+      HLP: { "0": 3.55, "1": 0 },
+      HTN: { "0": 0, "1": 4.28 },
+      CKD: { "0": 0, "1": 0.527 }
+    };
+
+    // 總分與預測機率對照表，請依照你的圖補齊
+    const totalPointsToProb = [
+      { points: 41.85, prob: 0.01 },
+      { points: 50.24, prob: 0.05 },
+      { points: 54.04, prob: 0.10 },
+      { points: 58.16, prob: 0.20 },
+      { points: 65.20, prob: 0.50 },
+      { points: 72.25, prob: 0.80 },
+      { points: 80.17, prob: 0.95 },
+      { points: 88.56, prob: 0.99 }
+    ];
+
+    // 線性內插 function
+    function interpolate(x, table) {
+      if (x <= table[0].points) return table[0].prob;
+      if (x >= table[table.length-1].points) return table[table.length-1].prob;
+      for (let i=0; i<table.length-1; i++) {
+        if (x >= table[i].points && x <= table[i+1].points) {
+          let p1 = table[i], p2 = table[i+1];
+          let prob = p1.prob + (p2.prob - p1.prob) * (x - p1.points) / (p2.points - p1.points);
+          return prob;
+        }
+      }
+      return null;
+    }
+
+    function calculate() {
+      let total = 0;
+      for (let field in scoreTable) {
+        let val = document.getElementById(field).value;
+        let pt = scoreTable[field][val];
+        total += pt ? Number(pt) : 0;
+      }
+      // 預測機率
+      let prob = interpolate(total, totalPointsToProb);
+      document.getElementById('result').innerHTML =
+        `總分: <b>${total.toFixed(2)}</b>，預測 MASLD(+) 機率: <b>${(prob*100).toFixed(1)}%</b>`;
+    }
+  </script>
+</body>
+</html>
