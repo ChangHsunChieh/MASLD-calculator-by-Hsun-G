@@ -10,6 +10,9 @@
     select, input { width: 100px; }
     #result { font-size: 1.2em; margin-top: 24px; font-weight: bold; color: #005580; }
     .note { font-size: 0.85em; color: #888; }
+    #advice { margin-top: 16px; font-size: 1em;}
+    .advice-block { margin-bottom: 10px;}
+    .diff { color: green; font-weight:bold; }
   </style>
 </head>
 <body>
@@ -89,8 +92,10 @@
     <button type="button" onclick="calculate()">計算</button>
   </form>
   <div id="result"></div>
+  <div id="advice"></div>
   <div class="note">
     <p>請依照您的狀況輸入 能量消耗PAEE、年齡、BMI，其餘變數選擇對應值，即可預測 MASLD 機率。</p>
+    <p>此預測工具僅供學術參考，並非臨床診斷依據。</p>
   </div>
   <script>
     // 連續變數的分數對照表
@@ -148,26 +153,62 @@
       return null;
     }
 
-    function calculate() {
-      let paee = parseFloat(document.getElementById('PAEE').value);
-      let age = parseFloat(document.getElementById('age').value);
-      let bmi = parseFloat(document.getElementById('g_bmi').value);
-
+    function getTotal(paee, age, bmi, fields) {
       let total = 0;
       total += interpolate(paee, PAEE_points, "value", "points");
       total += interpolate(age, age_points, "value", "points");
       total += interpolate(bmi, g_bmi_points, "value", "points");
-
-      // 其餘分類變數
       for (let field in scoreTable) {
-        let val = document.getElementById(field).value;
+        let val = fields && fields[field] !== undefined ? fields[field] : document.getElementById(field).value;
         total += Number(scoreTable[field][val]);
       }
+      return total;
+    }
 
-      // 預測機率
-      let prob = interpolate(total, totalPointsToProb, "points", "prob");
+    function getProb(total) {
+      return interpolate(total, totalPointsToProb, "points", "prob");
+    }
+
+    function calculate() {
+      let paee = parseFloat(document.getElementById('PAEE').value) || 0;
+      let age = parseFloat(document.getElementById('age').value) || 0;
+      let bmi = parseFloat(document.getElementById('g_bmi').value) || 0;
+
+      // 目前各分類變數的值組成物件
+      let fields = {};
+      for (let field in scoreTable) {
+        fields[field] = document.getElementById(field).value;
+      }
+
+      // 目前
+      let totalNow = getTotal(paee, age, bmi, fields);
+      let probNow = getProb(totalNow);
+
+      // PAEE+1000 (上限不超過9000)
+      let paeePlus = Math.min(paee+1000, 9000);
+      let totalPAEEup = getTotal(paeePlus, age, bmi, fields);
+      let probPAEEup = getProb(totalPAEEup);
+
+      // BMI-5 (下限不小於10)
+      let bmiMinus = Math.max(bmi-5, 10);
+      let totalBMImin = getTotal(paee, age, bmiMinus, fields);
+      let probBMImin = getProb(totalBMImin);
+
+      // 差異
+      let paeeDiff = probNow - probPAEEup;
+      let bmiDiff = probNow - probBMImin;
+
+      // 輸出
       document.getElementById('result').innerHTML =
-        `總分: <b>${total.toFixed(2)}</b>，預測 MASLD(+) 機率: <b>${(prob*100).toFixed(1)}%</b>`;
+        `總分: <b>${totalNow.toFixed(2)}</b>，預測 MASLD(+) 機率: <b>${(probNow*100).toFixed(1)}%</b>`;
+
+      document.getElementById('advice').innerHTML =
+        `<div class="advice-block">
+          每週增加 <b>1000</b> 能量消耗，可降低約 <b>${paeeDiff > 0 ? (paeeDiff*100).toFixed(1): "0.0"}%</b> MASLD風險
+        </div>
+        <div class="advice-block">
+          降低 <b>5</b> BMI，可降低約 <b>${bmiDiff > 0 ? (bmiDiff*100).toFixed(1): "0.0"}%</b> MASLD風險
+        </div>`;
     }
   </script>
 </body>
