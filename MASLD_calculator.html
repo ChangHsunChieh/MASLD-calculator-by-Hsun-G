@@ -2,142 +2,173 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>生理運動消耗與 MASLD(+) 線上計算機 </title>
+  <title>Online Calculator for PAEE and MASLD(+)</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 40px; }
-    .row { margin-bottom: 14px; }
-    label { display: inline-block; width: 120px; }
-    select, input { width: 100px; }
-    #result { font-size: 1.2em; margin-top: 24px; font-weight: bold; color: #005580; }
-    .note { font-size: 0.85em; color: #888; }
-    #advice { margin-top: 16px; font-size: 1em;}
-    .advice-block { margin-bottom: 10px;}
+    .form-group {
+      display: flex;
+      align-items: center;
+      margin-bottom: 22px;
+      gap: 20px;
+    }
+    label {
+      min-width: 280px;
+      font-size: 1.05em;
+      margin-right: 10px;
+    }
+    select, input[type="number"], input[type="text"] {
+      width: 180px;
+      padding: 7px 10px;
+      font-size: 1em;
+      border-radius: 5px;
+      border: 1px solid #bbb;
+      box-sizing: border-box;
+    }
+    button {
+      margin-top: 26px;
+      padding: 10px 24px;
+      font-size: 1.07em;
+      border-radius: 5px;
+      border: 1px solid #005580;
+      background: #e4f2fb;
+      color: #005580;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #b8e4fa;
+    }
+    #result { font-size: 1.2em; margin-top: 28px; font-weight: bold; color: #005580; }
+    .note { font-size: 0.95em; color: #888; margin-top: 26px;}
+    #advice { margin-top: 20px; font-size: 1.04em;}
+    .advice-block { margin-bottom: 16px;}
     .diff { color: green; font-weight:bold; }
+    h2 { margin-bottom: 35px;}
   </style>
 </head>
 <body>
-  <h2> 生理能量消耗(PAEE) 之 MASLD 預測評估線上計算機 By Hsun-Chieh </h2>
+  <h2>Online Calculator for PAEE and MASLD(+) ByCHC</h2>
   <form id="nomogramForm" onsubmit="return false;">
-    <div class="row">
-      <label for="PAEE">運動消耗 PAEE(kcal/week)</label>
+    <div class="form-group">
+      <label for="PAEE">Physical Activity Energy Expenditure PAEE (kcal/week)</label>
       <input type="number" id="PAEE" min="0" max="9000" step="any" value="0">
     </div>
-    <div class="row">
-      <label for="workstreng">您的工作強度</label>
+    <div class="form-group">
+      <label for="workstreng">Your Work Intensity</label>
       <select id="workstreng">
-        <option value="1">大部分時間坐著</option>
-        <option value="2">頻繁重複坐下,走動</option>
-        <option value="3">大部分站立,走動</option>
-        <option value="4">需用全身肌肉</option>
+        <option value="1">Mostly sitting</option>
+        <option value="2">Frequent alternation between sitting and walking</option>
+        <option value="3">Mostly standing and walking</option>
+        <option value="4">Requires full-body muscle exertion</option>
       </select>
     </div>
-    <div class="row">
-      <label for="age">您的年齡</label>
+    <div class="form-group">
+      <label for="age">Your age</label>
       <input type="number" id="age" min="15" max="65" step="any" value="20">
     </div>
-    <div class="row">
-      <label for="gender">您的性別</label>
+    <div class="form-group">
+      <label for="gender">Your gender</label>
       <select id="gender">
         <option value="Female">Female</option>
         <option value="Male">Male</option>
       </select>
     </div>
-    <div class="row">
-      <label for="g_bmi">您的BMI數值</label>
+    <div class="form-group">
+      <label for="g_bmi">Please Enter Your BMI Value</label>
       <input type="number" id="g_bmi" min="10" max="55" step="any" value="25">
     </div>
-    <div class="row">
-      <label for="Smoking">您是否抽過菸?</label>
+    <div class="form-group">
+      <label for="Smoking">Have you ever smoked?</label>
       <select id="Smoking">
-        <option value="0">從未抽過</option>
-        <option value="1">有抽過/曾經抽過</option>
+        <option value="0">Never smoked</option>
+        <option value="1">Currently or previously smoked</option>
       </select>
     </div>
-    <div class="row">
-      <label for="Alcohol">您是否喝酒?</label>
+    <div class="form-group">
+      <label for="Alcohol">Have you ever consumed alcohol?</label>
       <select id="Alcohol">
-        <option value="0">從未喝過</option>
-        <option value="1">有喝過/曾經喝過</option>
+        <option value="0">Never consumed alcohol</option>
+        <option value="1">Currently or previously consumed alcohol</option>
       </select>
     </div>
-    <div class="row">
-      <label for="DM">您是否有糖尿病?</label>
+    <div class="form-group">
+      <label for="DM">Do you have diabetes?</label>
       <select id="DM">
-        <option value="0">無</option>
-        <option value="1">有,第一型糖尿病</option>
-        <option value="2">有,第二型糖尿病</option>
+        <option value="0">No</option>
+        <option value="1">Yes, Type 1 diabetes</option>
+        <option value="2">Yes, Type 2 diabetes</option>
       </select>
     </div>
-    <div class="row">
-      <label for="HLP">您是否有高血脂症?</label>
+    <div class="form-group">
+      <label for="HLP">Do you have hyperlipidemia?</label>
       <select id="HLP">
-        <option value="0">否</option>
-        <option value="1">是</option>
+        <option value="0">No</option>
+        <option value="1">Yes</option>
       </select>
     </div>
-    <div class="row">
-      <label for="HTN">您是否有高血壓?</label>
+    <div class="form-group">
+      <label for="HTN">Do you have hypertension?</label>
       <select id="HTN">
-        <option value="0">否</option>
-        <option value="1">是</option>
+        <option value="0">No</option>
+        <option value="1">Yes</option>
       </select>
     </div>
-    <div class="row">
-      <label for="CKD">您是否有慢性腎臟疾病?</label>
+    <div class="form-group">
+      <label for="CKD">Do you have chronic kidney disease?</label>
       <select id="CKD">
-        <option value="0">否</option>
-        <option value="1">是</option>
+        <option value="0">No</option>
+        <option value="1">Yes</option>
       </select>
     </div>
-    <button type="button" onclick="calculate()">計算</button>
+    <button type="button" onclick="calculate()">Click to Calculate</button>
   </form>
   <div id="result"></div>
   <div id="advice"></div>
   <div class="note">
-    <p>請依照您的狀況輸入 能量消耗PAEE、年齡、BMI，其餘變數選擇對應值，即可預測 MASLD 機率。</p>
-    <p>此預測工具僅供學術參考，並非臨床診斷依據。</p>
+    <p>Please enter your Physical Activity Energy Expenditure (PAEE), age, and BMI according to your situation. For other variables, select the corresponding values. You can then estimate the probability of MASLD.</p>
+    <p>This prediction tool is for academic reference only. It is still being optimized and should not be used as a basis for clinical diagnosis.</p>
   </div>
   <script>
     // 連續變數的分數對照表
     const PAEE_points = [
-      {value:0, points:9},{value:1000, points:8},{value:2000, points:7},
-      {value:3000, points:6},{value:4000, points:5},{value:5000, points:4},
-      {value:6000, points:3},{value:7000, points:2},{value:8000, points:1},{value:9000, points:0}
+      {value:0, points:10.901064},{value:1000, points:9.689835},{value:2000, points:8.478605},
+      {value:3000, points:7.267376},{value:4000, points:6.056147},{value:5000, points:4.844917},
+      {value:6000, points:3.633688},{value:7000, points:2.422459},{value:8000, points:1.211229},{value:9000, points:0}
     ];
     const age_points = [
-      {value:15, points:0},{value:20, points:1},{value:25, points:1},
-      {value:30, points:2},{value:35, points:2},{value:40, points:3},
-      {value:45, points:3},{value:50, points:4},{value:55, points:4},
-      {value:60, points:5},{value:65, points:6}
+      {value:15, points:0},{value:20, points:0.59266241},{value:25, points:1.1853248 },
+      {value:30, points:1.7779871 },{value:35, points:2.3706495 },{value:40, points:2.9633119 },
+      {value:45, points:3.5559743 },{value:50, points:4.1486367 },{value:55, points:4.7412990 },
+      {value:60, points:5.3339614 },{value:65, points:5.9266238 }
     ];
     const g_bmi_points = [
-      {value:10, points:0},{value:15, points:11},{value:20, points:22},
-      {value:25, points:33},{value:30, points:44},{value:35, points:56},
-      {value:40, points:67},{value:45, points:78},{value:50, points:89},{value:55, points:100}
+      {value:15, points:0},{value:20, points:12.5  },
+      {value:25, points:25.0  },{value:30, points:37.5  },{value:35, points:50.0  },
+      {value:40, points:62.5  },{value:45, points:75.0  },{value:50, points:87.5 },{value:55, points:100}
     ];
 
     // 類別變數分數表
     const scoreTable = {
-      workstreng: { "1": 7, "2": 4, "3": 2, "4": 0 },
-      gender: { "Female": 0, "Male": 6 },
-      Smoking: { "0": 0, "1": 0 },
-      Alcohol: { "0": 1, "1": 0 },
-      DM: { "0": 0, "1": 4, "2": 6 },
-      HLP: { "0": 0, "1": 2 },
-      HTN: { "0": 0, "1": 0 },
-      CKD: { "0": 2, "1": 0 }
+      workstreng: { "1": 7.691863 , "2": 5.127909 , "3": 2.563954, "4": 0 },
+      gender: { "Female": 0, "Male":6.108661 },
+      Smoking: { "0": 0, "1": 0.169077 },
+      Alcohol: { "0": 1.11 , "1": 0 },
+      DM: { "0": 0, "1": 4.43, "2": 8.86 },
+      HLP: { "0": 0, "1": 1.98 },
+      HTN: { "0": 0, "1": 0.432 },
+      CKD: { "0": 2.3, "1": 0 }
     };
 
     // 總分與預測機率對照表
     const totalPointsToProb = [
-      { points: 45, prob: 0.01 },
-      { points: 53, prob: 0.05 },
-      { points: 57, prob: 0.10 },
-      { points: 61, prob: 0.20 },
-      { points: 67, prob: 0.50 },
-      { points: 74, prob: 0.80 },
-      { points: 82, prob: 0.95 },
-      { points: 90, prob: 0.99 }
+      { points: 38.15119 , prob: 0.01 },
+      { points: 47.22453 , prob: 0.05 },
+      { points: 51.33198 , prob: 0.10 },
+      { points: 55.78949 , prob: 0.20 },
+      { points: 63.40987 , prob: 0.50 },
+      { points: 71.03018 , prob: 0.80 },
+      { points: 79.59517 , prob: 0.95 },
+      { points: 88.66859, prob: 0.99 }
     ];
 
     // 線性內插 function
@@ -189,8 +220,8 @@
       let totalPAEEup = getTotal(paeePlus, age, bmi, fields);
       let probPAEEup = getProb(totalPAEEup);
 
-      // BMI-5 (下限不小於10)
-      let bmiMinus = Math.max(bmi-5, 10);
+      // BMI-1 (下限不小於10)
+      let bmiMinus = Math.max(bmi-1, 10);
       let totalBMImin = getTotal(paee, age, bmiMinus, fields);
       let probBMImin = getProb(totalBMImin);
 
@@ -200,17 +231,16 @@
 
       // 輸出
       document.getElementById('result').innerHTML =
-        `總分: <b>${totalNow.toFixed(2)}</b>，預測 MASLD(+) 機率: <b>${(probNow*100).toFixed(1)}%</b>`;
+        `Total score : <b>${totalNow.toFixed(2)}</b>, Predict the Probability of MASLD(+): <b>${(probNow*100).toFixed(1)}%</b>`;
 
       document.getElementById('advice').innerHTML =
         `<div class="advice-block">
-          每週增加 <b>1000</b> 能量消耗，可降低約 <b>${paeeDiff > 0 ? (paeeDiff*100).toFixed(1): "0.0"}%</b> MASLD風險
+          Increasing weekly energy expenditure by <b>1000</b> can reduce the risk by approximately <b>${paeeDiff > 0 ? (paeeDiff*100).toFixed(1): "0.0"}%</b> MASLD risk
         </div>
         <div class="advice-block">
-          降低 <b>5</b> BMI，可降低約 <b>${bmiDiff > 0 ? (bmiDiff*100).toFixed(1): "0.0"}%</b> MASLD風險
+          Decrease <b>1</b> BMI，can reduce the risk by approximately <b>${bmiDiff > 0 ? (bmiDiff*100).toFixed(1): "0.0"}%</b> MASLD risk
         </div>`;
     }
   </script>
 </body>
 </html>
-
